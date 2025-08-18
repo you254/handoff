@@ -29,6 +29,9 @@ services:
       DB_NAME: handoff
       DB_USERNAME: handoff
       DB_PASSWORD: handoff
+      # Redis connection
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
       # JWT defaults
       JWT_SECRET: change-this-secret-please
       JWT_EXPIRATION: 86400000
