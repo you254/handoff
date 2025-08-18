@@ -47,7 +47,22 @@ All endpoints are prefixed with `/api/v1`.
 - `DELETE /projects/{id}` — Delete project. **Path:** `id`
 - `POST /projects/{id}/view` — Increment project view count. **Path:** `id`
 
-**Note:** All POST/PUT endpoints expect a JSON body (`@RequestBody`). Path variables are shown as `{param}`. Auth endpoints return JWT tokens for use in `Authorization: Bearer <token>` headers.
+**Note:** All POST/PUT endpoints expect a JSON body (`@RequestBody`). Path variables are shown as `{param}`. After logging in, include the JWT token in the `Authorization: Bearer <token>` header for all protected endpoints.
+
+---
+
+## API Documentation & Monitoring
+
+- **Swagger UI:**  [http://localhost:8080/swagger-ui/index.html](http://localhost:8080/swagger-ui/index.html)
+  _Interactive API docs and testing interface._
+- **OpenAPI Spec:**  [http://localhost:8080/v3/api-docs](http://localhost:8080/v3/api-docs)
+  _Raw OpenAPI JSON for codegen or tools._
+- **Actuator Health:**  [http://localhost:8080/actuator/health](http://localhost:8080/actuator/health)
+  _Health check endpoint for monitoring._
+- **Actuator Info:**  [http://localhost:8080/actuator/info](http://localhost:8080/actuator/info)
+  _Basic app info._
+- **All Actuator Endpoints:**  [http://localhost:8080/actuator](http://localhost:8080/actuator)
+  _List of all enabled actuator endpoints._
 
 ---
 
@@ -75,7 +90,7 @@ mvn -DskipTests -f handoff-backend/pom.xml package
 docker compose up -d --build
 
 # Check health
-curl http://localhost:8080/api/v1/actuator/health
+curl http://localhost:8080/actuator/health
 ```
 
 compose uses docker/backend.Dockerfile and sets:

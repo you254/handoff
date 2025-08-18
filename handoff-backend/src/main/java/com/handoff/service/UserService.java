@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -44,6 +45,11 @@ public class UserService {
         return userLookupService.findByEmailOrThrow(email);
     }
 
+    public User findByIdOrThrow(UUID id) {
+        return userLookupService.findByIdOrThrow(id);
+    }
+
+
     @Transactional
     public User updateProfile(String email,
                               String firstName,
@@ -65,6 +71,13 @@ public class UserService {
         User u = userLookupService.findByEmailOrThrow(email);
         u.setStatus(UserStatus.INACTIVE);
         userRepository.save(u);
+    }
+
+    @Transactional
+    public void updateLastLoginAt(UUID id) {
+        User user = findByIdOrThrow(id);
+        user.setLastLoginAt(java.time.Instant.now());
+        userRepository.save(user);
     }
 
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

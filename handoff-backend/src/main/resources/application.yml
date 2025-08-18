@@ -35,9 +35,9 @@ spring:
   flyway:
     enabled: true
 
-# JWT defaults
+# JWT defaults - Need vault or another secure way to manage secrets
 jwt:
-  secret: ${JWT_SECRET:change-this-secret-please}
+  secret: ${JWT_SECRET}
   expiration: ${JWT_EXPIRATION:86400000}
 
 # CORS defaults
@@ -59,8 +59,10 @@ logging:
 
 server:
   port: 8080
-  servlet:
-    context-path: /api/v1
+
+springdoc:
+  default-produces-media-type: application/json
+  default-consumes-media-type: application/json
 
 ---
 # Nonprod profile: PostgreSQL with Flyway

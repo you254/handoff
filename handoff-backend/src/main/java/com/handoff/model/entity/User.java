@@ -1,5 +1,6 @@
 package com.handoff.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.handoff.model.enums.UserRole;
 import com.handoff.model.enums.UserStatus;
@@ -47,15 +48,18 @@ public class User {
 
     @Type(JsonType.class)
     @Column(name = "profile", columnDefinition = "jsonb")
+    @JsonIgnore
     private JsonNode profileJson;
 
     @Type(JsonType.class)
     @Column(name = "preferences", columnDefinition = "jsonb")
+    @JsonIgnore
     private JsonNode preferencesJson;
 
     @ElementCollection
     @CollectionTable(name = "user_skills", joinColumns = @JoinColumn(name = "user_id"))
     @Column(name = "skill", length = 100)
+    @JsonIgnore
     private Set<String> skills = new HashSet<>();
 
     @CreationTimestamp
@@ -73,8 +77,10 @@ public class User {
     private boolean emailVerified = false;
 
     @OneToMany(mappedBy = "creator", cascade = CascadeType.ALL, orphanRemoval = false)
+    @JsonIgnore
     private List<Project> createdProjects = new ArrayList<>();
 
     @OneToMany(mappedBy = "finisher", cascade = CascadeType.ALL, orphanRemoval = false)
+    @JsonIgnore
     private Set<ProjectApplication> applications = new HashSet<>();
 }

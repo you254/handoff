@@ -34,16 +34,14 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<AuthResponse> register(@Valid @RequestBody RegisterRequest request) {
         request.sanitize();
+        log.info("Registration attempt for email: {}", request.getEmail());
         if (userService.existsByEmail(request.getEmail())) {
+            log.warn("Registration failed: Email {} already exists", request.getEmail());
             return ResponseEntity.badRequest().build();
         }
-        User user = userService.register(
-                request.getEmail(),
-                request.getPassword(),
-                request.getFirstName(),
-                request.getLastName(),
-                request.getRole()
-        );
+        User user = userService.register(request.getEmail(), request.getPassword(),
+                request.getFirstName(), request.getLastName(), request.getRole());
+        log.info("User registered successfully: id={}, email={}", user.getId(), user.getEmail());
         String token = jwtTokenProvider.generateToken(user.getEmail(), mapRoles(user.getRole()));
         return ResponseEntity.ok(AuthResponse.from(user, token));
     }
@@ -51,16 +49,18 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest request) {
         request.sanitize();
+        log.info("Login attempt for email: {}", request.getEmail());
         try {
             authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
-            );
+                    new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
         } catch (AuthenticationException ex) {
-            log.error("Authentication failed: {}", ex.getMessage());
+            log.error("Authentication failed for email {}: {}", request.getEmail(), ex.getMessage());
             return ResponseEntity.status(401).build();
         }
         User user = userService.findByEmailOrThrow(request.getEmail());
+        log.info("User logged in successfully: id={}, email={}", user.getId(), user.getEmail());
         String token = jwtTokenProvider.generateToken(user.getEmail(), mapRoles(user.getRole()));
+        userService.updateLastLoginAt(user.getId());
         return ResponseEntity.ok(AuthResponse.from(user, token));
     }
 
